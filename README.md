@@ -1,11 +1,36 @@
-# cuandollega-web
+# Cuando Llega Web
 
-This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
-version 0.11.1.
+Web version of [Cuando llega mvil Andrid App]( https://play.google.com/store/apps/details?id=com.samsoft.cuandollega)
 
-## Build & development
+## Dependecy
 
-Run `grunt` for building and `grunt serve` for preview.
+* Node.js
+* npm
+* grunt (grunt-cli)
+* bower
+
+`npm intall grunt-cli grunt bower`
+
+## Development
+
+`git clone https://github.com/p4bl1t0/cuandollega-web.git cuandollega-web`
+
+`cd cuandollega-web`
+
+`bower clean`
+
+`bower install`
+
+`npm intall`
+
+`grunt serve`
+
+
+## Build
+
+
+Run `grunt build` for building and `grunt serve` for preview.
+
 
 ## Testing
 
