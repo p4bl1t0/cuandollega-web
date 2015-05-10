@@ -1,15 +1,40 @@
 <div class="row">
-    <div class="panel panel-default col-md-6">
+    <div class="col-md-6">
         <!--<select ng-options="bondi.name for bondi in bondis track by bondi.id" ng-model="selectedBus"></select>-->
-        
-        <form role="form" class="form-horizontal" ng-submit="showArrivedInformation()">
-            <select ng-options="calle.name for calle in calles track by calle.id"  ng-model="selectedStreet" ng-change="streetChange()"></select>
-            <select ng-options="i.iName for i in paradas track by i.idInter"  ng-model="selectedIntersection" ng-change="intersectionChange()"></select>
-            <select ng-options="bondi.linea for bondi in colectivos track by bondi.id"  ng-model="selectedBus"></select>
-            <button type="submit">Buscar</button>
+        <form role="form" class="form-horizontal well pages" ng-submit="showArrivedInformation()">
+          <h2 class="header">Por esquina</h2>
+           <div class="form-group">
+               <div class="col-md-2 text-right">
+                   <label for="ddlCalle">Calle</label>
+               </div>
+               <div class="col-md-10">
+                   <select ng-options="calle.name for calle in calles track by calle.id" ng-model="selectedStreet" ng-change="streetChange()" class="form-control" id="ddlCalle"></select>
+               </div>
+           </div>
+           <div class="form-group">
+               <div class="col-md-2 text-right">
+                   <label for="ddlCalle">Esquina</label>
+               </div>
+               <div class="col-md-10">
+                    <select ng-options="i.iName for i in paradas track by i.idInter"  ng-model="selectedIntersection" ng-change="intersectionChange()" class="form-control"></select>
+               </div>
+           </div>
+           <div class="form-group">
+               <div class="col-md-2 text-right">
+                   <label for="ddlCalle">Colectivo</label>
+               </div>
+               <div class="col-md-10">
+                    <select ng-options="bondi.linea for bondi in colectivos track by bondi.id" ng-model="selectedBus" class="form-control"></select>
+               </div>
+           </div>
+           <div class="form-group">
+                <div class="col-md-3 col-md-offset-9">
+                    <button type="submit" class="btn btn-primary btn-raised">Buscar</button>
+                </div>
+           </div>
         </form>
     </div>
-    <div class="panel panel-default  col-md-6">
-        <div class="bg-success text-success" ng-show="arrivedInformation">{{arrivedInformation}}</div>
+    <div class="col-md-6">
+        <div class="bg-success text-success well pages" ng-show="arrivedInformation">{{arrivedInformation}}</div>
     </div>
 </div>
