@@ -4,15 +4,15 @@
         <form role="form" class="form-horizontal well pages" ng-submit="showArrivedInformation()">
           <h2 class="header">Por esquina</h2>
            <div class="form-group">
-               <div class="col-md-2 text-right">
+               <div class="col-md-2">
                    <label for="ddlCalle">Calle</label>
                </div>
                <div class="col-md-10">
-                   <select ng-options="calle.name for calle in calles track by calle.id" ng-model="selectedStreet" ng-change="streetChange()" class="form-control" id="ddlCalle"></select>
+                   <select ng-options="calle.name for calle in callesConParadas track by calle.id" ng-model="selectedStreet" ng-change="streetChange()" class="form-control" id="ddlCalle"></select>
                </div>
            </div>
            <div class="form-group">
-               <div class="col-md-2 text-right">
+               <div class="col-md-2">
                    <label for="ddlCalle">Esquina</label>
                </div>
                <div class="col-md-10">
@@ -20,7 +20,7 @@
                </div>
            </div>
            <div class="form-group">
-               <div class="col-md-2 text-right">
+               <div class="col-md-2">
                    <label for="ddlCalle">Colectivo</label>
                </div>
                <div class="col-md-10">
@@ -28,13 +28,15 @@
                </div>
            </div>
            <div class="form-group">
-                <div class="col-md-3 col-md-offset-9">
-                    <button type="submit" class="btn btn-primary btn-raised">Buscar</button>
+                <div class="col-md-4 col-md-offset-8">
+                    <button type="submit" class="btn btn-primary btn-raised">Cuando llega</button>
                 </div>
            </div>
         </form>
     </div>
     <div class="col-md-6">
-        <div class="bg-success text-success well pages" ng-show="arrivedInformation">{{arrivedInformation}}</div>
+        <div class="well pages" ng-show="arrivedInformation.length">
+            <p ng-repeat="data in arrivedInformation track by $index">{{data}}</p>
+        </div>
     </div>
 </div>

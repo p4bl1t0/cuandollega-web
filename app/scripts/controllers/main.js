@@ -12,13 +12,14 @@ angular.module('cuandollegaWebApp')
         //localStorage.clear();
         $scope.bondis = [];
         $scope.calles = []; 
+        $scope.callesConParadas = []; 
         $scope.paradas = [];
         $scope.intersecciones = [];
         $scope.colectivos = [];
         $scope.selectedStreet = null;
         $scope.selectedIntersection = null;
         $scope.selectedBus = null;
-        $scope.arrivedInformation = "";
+        $scope.arrivedInformation = [];
         //Data initialization
         
         var getIntersecciones = function ($http, intersecciones, calles) {
@@ -44,6 +45,17 @@ angular.module('cuandollegaWebApp')
             }
         }
         
+        var findBus = function (id) {
+            if($scope.bondis !== null) {
+                for (var i = 0; i < $scope.bondis.length; i++) {
+                    var bondi = $scope.bondis[i];
+                    if(bondi.id.toString() === id.toString()) {
+                        return bondi;
+                    }
+                }
+            }
+        }
+        
         var storageBondis = localStorage.getItem("bondis");
         if(storageBondis === null) {
             $http.get("http://sam.162.243.6.106.xip.io/data.php?action=bondis").success(function (data) {
@@ -57,15 +69,26 @@ angular.module('cuandollegaWebApp')
             getIntersecciones($http, $scope.intersecciones, $scope.calles);
         }
         var storageCalles = localStorage.getItem("calles");
+        var storageCallesConParadas = localStorage.getItem("callesConParadas");
         if(storageCalles === null) {
             $http.get("http://sam.162.243.6.106.xip.io/data.php?action=calles").success(function (data) {
                 console.log(data);
                 $scope.calles = data;
+                
+                angular.forEach($scope.calles, function(calle) {
+                    //console.log(calle.hasStops);
+                    if(calle.hasStops === "1") {
+                       $scope.callesConParadas.push(calle);
+                    }
+                });
+                console.log($scope.callesConParadas);
                 localStorage.setItem('calles', JSON.stringify($scope.calles));
+                localStorage.setItem('callesConParadas', JSON.stringify($scope.callesConParadas));
                 
             });
         } else {
             $scope.calles =JSON.parse(storageCalles);
+            $scope.callesConParadas =JSON.parse(storageCallesConParadas);
             
         }
         
@@ -97,11 +120,26 @@ angular.module('cuandollegaWebApp')
             console.log($scope.colectivos );
         };
         $scope.showArrivedInformation = function  () {
-            console.log("Parada:", $scope.selectedIntersection.parada);
-            console.log("Linea:", $scope.selectedBus.linea);
-            $http.get("http://sam.162.243.6.106.xip.io/data.php?action=llegada&parada=" + $scope.selectedIntersection.parada + "&linea=" + $scope.selectedBus.linea).success(function (data) {
-                $scope.arrivedInformation = data;
-            });
+            console.log($scope.selectedBus);
+            $scope.arrivedInformation = [];
+            if($scope.selectedBus !== null) {
+                console.log("Parada:", $scope.selectedIntersection.parada);
+                console.log("Linea:", $scope.selectedBus.linea);
+                $http.get("http://sam.162.243.6.106.xip.io/data.php?action=llegada&parada=" + $scope.selectedIntersection.parada + "&linea=" + $scope.selectedBus.linea).success(function (data) {
+                    $scope.arrivedInformation.push(data);
+                });
+            } else {
+                if($scope.selectedIntersection !== null && $scope.selectedIntersection.bondis !== undefined && $scope.selectedIntersection.bondis.length > 0) {
+                    angular.forEach($scope.selectedIntersection.bondis, function (bondi) {
+                        bondi = findBus(bondi.id);
+                        $http.get("http://sam.162.243.6.106.xip.io/data.php?action=llegada&parada=" + $scope.selectedIntersection.parada + "&linea=" + bondi.linea).success(function (data) {
+                            $scope.arrivedInformation.push(data);
+                        });
+                    });
+                } else {
+                    $scope.arrivedInformation.push("Seleccione alguna intersección para conocer los horarios de arribo.");
+                }
+            }
         }
 
     }]);
