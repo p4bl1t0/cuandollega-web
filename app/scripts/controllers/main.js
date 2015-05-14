@@ -20,6 +20,7 @@ angular.module('cuandollegaWebApp')
         $scope.selectedIntersection = null;
         $scope.selectedBus = null;
         $scope.arrivedInformation = [];
+        $scope.list = [];
         //Data initialization
         
         var getIntersecciones = function ($http, intersecciones, calles) {
@@ -89,6 +90,7 @@ angular.module('cuandollegaWebApp')
         } else {
             $scope.calles =JSON.parse(storageCalles);
             $scope.callesConParadas =JSON.parse(storageCallesConParadas);
+            $scope.list = $scope.callesConParadas;
             
         }
         
@@ -138,6 +140,46 @@ angular.module('cuandollegaWebApp')
                     });
                 } else {
                     $scope.arrivedInformation.push("Seleccione alguna intersección para conocer los horarios de arribo.");
+                }
+            }
+        }
+        var depth = 0;
+        var paradaElegida = null;
+        $scope.updateList = function (item) {
+            console.log(item);
+            if(depth === 0) {
+                $scope.list = [];
+                angular.forEach($scope.intersecciones, function(parada) {
+                    if(parada.idCalle.toString() === item.id.toString()) {
+                        parada.name = parada.iName;
+                        $scope.list.push(parada);
+                    }
+                });
+                depth++;
+            } else {
+                if(depth === 1) {
+                    $scope.list = [];
+                    paradaElegida = item;
+                    $scope.list.push({ name: "- TODOS -", id: 0});
+                    angular.forEach($scope.bondis, function(bondi) {
+                        angular.forEach(item.bondis, function(colectivo) {
+                            if(bondi.id.toString() === colectivo.id.toString()) {
+                                bondi.name = bondi.linea;
+                                $scope.list.push(bondi);
+                            }
+                        });
+                    });
+                    depth++;
+                } else {
+                    if(depth === 2) {
+                        $scope.list = [];
+                        if(item.id === 0) {
+                        } else {
+                            $http.get("http://sam.162.243.6.106.xip.io/data.php?action=llegada&parada=" + paradaElegida.parada + "&linea=" + item.name).success(function (data) {
+                                $scope.list.push({ name: data });
+                            });
+                        }
+                    }
                 }
             }
         }
